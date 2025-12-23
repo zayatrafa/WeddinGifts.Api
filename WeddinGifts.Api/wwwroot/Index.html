@@ -1,0 +1,43 @@
+﻿<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8" />
+    <title>WeddinGifts</title>
+</head>
+<body>
+
+    <h1>Cadastro de Presente</h1>
+
+    <input id="name" placeholder="Nome" />
+    <br />
+    <input id="description" placeholder="Descrição" />
+    <br />
+    <input id="price" type="number" step="0.01" placeholder="Preço" />
+    <br /><br />
+
+    <button onclick="createGift()">Salvar</button>
+
+    <script>
+async function createGift() {
+  const gift = {
+    name: document.getElementById('name').value,
+    description: document.getElementById('description').value,
+    price: parseFloat(document.getElementById('price').value)
+  };
+
+  const response = await fetch('/api/gifts', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(gift)
+  });
+
+  if (response.ok) {
+    alert('Presente salvo!');
+  } else {
+    alert('Erro ao salvar');
+  }
+}
+    </script>
+
+</body>
+</html>
