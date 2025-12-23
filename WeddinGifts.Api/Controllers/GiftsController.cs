@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using WeddinGifts.Api.Data;
+using WeddinGifts.Api.Dtos;
 using WeddinGifts.Api.Models;
-
 
 namespace WeddinGifts.Api.Controllers
 {
@@ -13,7 +13,6 @@ namespace WeddinGifts.Api.Controllers
     [ApiController]
     public class GiftsController : ControllerBase
     {
-
         private readonly AppDbContext _context;
         private readonly ILogger<GiftsController> _logger;
 
@@ -32,7 +31,6 @@ namespace WeddinGifts.Api.Controllers
         {
             _logger.LogInformation(">>> [Método GET do Controller]");
 
-
             var gifts = _context.Gifts.ToList();
 
             _logger.LogInformation(">>> HTTP Method visto pelo controller: {Method}", HttpContext.Request.Method);
@@ -42,27 +40,41 @@ namespace WeddinGifts.Api.Controllers
             return Ok(gifts);
         }
 
+        // GET /api/gifts/{id}
+        [HttpGet("{id}")]
+        public IActionResult GetById(int id)
+        {
+            _logger.LogInformation(">>> GET /api/gifts/{id}", id);
 
+            var gift = _context.Gifts.Find(id);
+
+            if (gift == null)
+                return NotFound();
+
+            return Ok(gift);
+        }
 
         // POST /api/gifts
         [HttpPost]
-        public IActionResult Create(Gift gift)
+        public IActionResult Create(CreateGiftDto dto)
         {
-            _logger.LogInformation(">>> [Método POST do Controller]");
+            _logger.LogInformation(">>> POST /api/gifts iniciado");
 
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            _logger.LogInformation(">>> Salvando gift: {Name}", gift.Name);
+            var gift = new Gift
+            {
+                Name = dto.Name,
+                Description = dto.Description,
+                Price = dto.Price,
+                IsActive = true
+            };
 
             _context.Gifts.Add(gift);
             _context.SaveChanges();
 
-            _logger.LogInformation(">>> Gift salvo com ID {Id}", gift.Id);
-
-            return CreatedAtAction(nameof(GetAll), gift);
+            return CreatedAtAction(nameof(GetById), new { id = gift.Id }, gift);
         }
-
-
     }
 }
