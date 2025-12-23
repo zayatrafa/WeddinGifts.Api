@@ -51,10 +51,7 @@ namespace WeddinGifts.Api.Controllers
             _logger.LogInformation(">>> [Método POST do Controller]");
 
             if (!ModelState.IsValid)
-            {
-                _logger.LogWarning(">>> Modelo inválido recebido");
                 return BadRequest(ModelState);
-            }
 
             _logger.LogInformation(">>> Salvando gift: {Name}", gift.Name);
 
