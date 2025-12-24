@@ -12,13 +12,12 @@ namespace WeddinGifts.Api.Models
 
         public string? Description { get; set; }
 
-
-        [Range(0.01, double.MaxValue)]
-
         [Column(TypeName = "decimal(18,2)")]
         public decimal Price { get; set; }
 
         public bool IsActive { get; set; } = true;
 
+        public int CoupleId { get; set; }
+        public Couple Couple { get; set; } = null!;
     }
 }
